@@ -1,3 +1,3 @@
 Install something
 
-https://oss`echo_$GITHUB_TOKEN`123
+https://oss${GITHUB_TOKEN}abc
