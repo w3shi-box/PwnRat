@@ -1,0 +1,31 @@
+name: Check download URL in W3shi
+
+permissions:
+  contents: read
+
+on:
+  push:
+    paths: 'install.md'
+
+  pull_request:
+    paths: 'install.md'
+
+jobs:
+  checkDownloadURL:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # actions/checkout@v3
+      - name: Run a url check script
+        run: |
+            url_list=$(grep -wio "https://oss[0-9_a-zA-Z\/.\-]*" docs/readthedocs/source/doc/Orca/Overview/install.md)
+            for line in $url_list
+            do
+              wget --spider -T 5 -q -t 2 $line
+              res=$?
+              if [ $res -ne 0 ]; 
+                then
+                    echo "URL:$line ERROR!"
+                    exit
+              fi
+            done
+            echo "all url is valids"
